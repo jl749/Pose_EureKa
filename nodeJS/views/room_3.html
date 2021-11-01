@@ -1,0 +1,36 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>socketIO_DEMO</title>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
+    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <input type="text" class="msg">
+    <button onclick=sendMessage()>Send Msg</button>
+
+    <script>
+        const socket = io('http://localhost:5000/room_3');
+        socket.on('connection', () => {
+            console.log('clinet connected to server socket');
+        });
+
+        function sendMessage() {
+            socket.emit('message', "aaaaaaaaaaaaaaaaaaaa");
+        }
+
+        socket.on('message', (data) => {
+            console.log(data);
+        });
+
+        socket.on("disconnect", (reason) => {
+            if (reason === "io server disconnect") {    
+                // the disconnection was initiated by the server, you need to reconnect manually    
+                socket.connect();  
+            }  
+            // else the socket will automatically try to reconnect
+        });
+    </script>
+</body>
+</html>
