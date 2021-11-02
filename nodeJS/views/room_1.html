@@ -5,19 +5,36 @@
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <script src="data/loader.js"></script>
 </head>
 <body>
-    <input type="text" class="msg">
-    <button onclick=sendMessage()>Send Msg</button>
+    <div style="width:640px;height:480px;max-width:100%">
+        <div id="game"></div>
+    </div>
 
-    <script>
+
+    <script type="text/javascript">
+        EJS_player = '#game';
+        EJS_gameUrl = './Street_Fighter_II_Turbo_U.smc'; // Url to Game rom
+        EJS_core = 'snes';
+        EJS_mouse = false; // SNES Mouse
+        EJS_multitap = false; // SNES Multitap
+        EJS_pathtodata = 'http://localhost:5000/data/';
+
+        // var clickplay = setInterval(() => {
+        // if (typeof document.getElementsByClassName('ejs--73f9b4e94a7a1fe74e11107d5ab2ef')[0] !== 'undefined') {
+        //     clearInterval(clickplay);
+        //     document.getElementsByClassName('ejs--73f9b4e94a7a1fe74e11107d5ab2ef')[0].click();
+        // }
+        // }, 100);
+
         const socket = io('http://localhost:5000/room_1');
         socket.on('connection', () => {
             console.log('clinet connected to server socket');
         });
 
         function sendMessage() {
-            socket.emit('message', "aaaaaaaaaaaaaaaaaaaa");
+            socket.emit('message', "room1_cmd");
         }
 
         socket.on('message', (data) => {
@@ -32,5 +49,6 @@
             // else the socket will automatically try to reconnect
         });
     </script>
+    
 </body>
 </html>

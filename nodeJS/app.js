@@ -8,6 +8,8 @@ var r1 = [];
 var r2 = [];
 var r3 = [];
 
+app.use(express.static('./public'));
+
 app.get('/room_1', (req, res) => {
     // res.render('index');
     res.sendFile(__dirname + '/views/room_1.html');
@@ -18,9 +20,9 @@ app.get('/room_2', (req, res) => {
 app.get('/room_3', (req, res) => {
     res.sendFile(__dirname + '/views/room_3.html');
 });
-app.all('*', (req, res) => {
-    res.status(404).send('resource not found');
-});
+// app.all('*', (req, res) => {
+//     res.status(404).send('resource not found');
+// });
 
 setRoom = (skt, room, arr) => {
     skt.on('connection', (socket) => {
