@@ -7,8 +7,8 @@
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <button onclick="emitCommand('kick')">KICK</button>
-    <button onclick="emitCommand('punch')">punch</button>
+    <button onclick="emitCommand('punchL')">punchL</button>
+    <button onclick="emitCommand('punchR')">punchR</button>
     <button onclick="emitCommand('jump')">jump</button>
     <script type="text/javascript">
         const socket = io('http://localhost:5000/room_1');
@@ -18,7 +18,7 @@
 
         function emitCommand(cmd) {
             console.log(cmd);
-            socket.emit('cmd', "room1 sent command - " + cmd);
+            socket.emit('cmd', cmd);
         }
 
         socket.on('message', (data) => {
