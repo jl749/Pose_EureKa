@@ -1,42 +1,48 @@
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, { cors: { origin: "*" } });
-const spawn = require("child_process").spawn;
+const io1 = require('socket.io')(server, { cors: { origin: "*" } });
+const io2 = require("socket.io-client");
 
 const PORT = 3000;
 
-io.on('connection', (socket) => {
+const flask = 'http://localhost:8000';
+var socketF = io2.connect(flask);
+socketF.on('connect', function () {
+    console.log('GameServer connected to Flask');
+});
+
+io1.on('connection', (socket) => {
 
 	console.log('room1 connected');
 
 	socket.on('cmd', (data) => {
 		console.log(data);
+		
 		switch(data) {
 			case "p1_punchL":
-				console.log('wow u punched me');
-				spawn('python', ["./keyMapper/keymap.py", 'z']);
+				socketF.emit('key_execute', 'z')
 				break;
 			case "p1_punchR":
-				spawn('python', ["./keyMapper/keymap.py", 'x']);
+				socketF.emit('key_execute', 'x')
 				break;
 			case "p1_kickL":
-				spawn('python', ["./keyMapper/keymap.py", 'c']);
+				socketF.emit('key_execute', 'c')
 				break;
 			case "p1_kickR":
-				spawn('python', ["./keyMapper/keymap.py", 'v']);
+				socketF.emit('key_execute', 'v')
 				break;
 			case "p1_jump":
-				spawn('python', ["./keyMapper/keymap.py", 0]);
+				socketF.emit('key_execute', 0)
 				break;
 			case "p1_crouch":
-				spawn('python', ["./keyMapper/keymap.py", 1]);
+				socketF.emit('key_execute', 1)
 				break;
 			case "p1_left":
-				spawn('python', ["./keyMapper/keymap.py", 2]);
+				socketF.emit('key_execute', 2)
 				break;
 			case "p1_right":
-				spawn('python', ["./keyMapper/keymap.py", 3]);
+				socketF.emit('key_execute', 3)
 				break;
 		}
 	});

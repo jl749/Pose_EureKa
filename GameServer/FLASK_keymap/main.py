@@ -1,0 +1,42 @@
+from flask import Flask
+from flask_socketio import SocketIO
+from pynput.keyboard import Key, Controller
+import datetime
+
+keyboard = Controller()
+arrowMap = {
+    '0': Key.up,
+    '1': Key.down,
+    '2': Key.left,
+    '3': Key.right,
+    '4': 8,
+    '5': 5,
+    '6': 4,
+    '7': 6,
+}
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'hello_there1234'
+socketio = SocketIO(app)
+
+
+@socketio.on('key_execute')
+def pressKey(key):
+    print("Pressing Key:", key, end=' ... ')
+    try:
+        key = arrowMap[key]
+    except KeyError:
+        pass
+
+    keyboard.press(key)
+    keyboard.release(key)
+
+    # log them
+    # with open('./keyEvent_log.txt', 'a') as f:
+    #     f.write(str(datetime.datetime.now()) + " " + key + '\n')
+
+    print('done')
+
+
+if __name__ == '__main__':
+    socketio.run(app, port=8000, debug=True)

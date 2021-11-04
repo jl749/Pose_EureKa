@@ -1,5 +1,4 @@
 # pip install pynput
-from typing import Mapping
 from pynput.keyboard import Key, Controller
 import sys
 import datetime
@@ -24,6 +23,7 @@ if __name__ == "__main__":
 
     keyboard = Controller()
     keyboard.press(key)
+    keyboard.release(key)
 
     # log them
     with open('./keyEvent_log.txt', 'a') as f:

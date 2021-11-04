@@ -1,0 +1,16 @@
+bidict==0.21.3
+click==8.0.3
+colorama==0.4.4
+dnspython==2.1.0
+eventlet==0.32.0
+Flask==2.0.2
+Flask-SocketIO==5.1.1
+greenlet==1.1.2
+itsdangerous==2.0.1
+Jinja2==3.0.2
+MarkupSafe==2.0.1
+pynput==1.7.4
+python-engineio==4.2.1
+python-socketio==5.4.1
+six==1.16.0
+Werkzeug==2.0.2
