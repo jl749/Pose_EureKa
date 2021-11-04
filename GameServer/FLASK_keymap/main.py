@@ -2,6 +2,7 @@ from flask import Flask
 from flask_socketio import SocketIO
 from pynput.keyboard import Key, Controller
 import datetime
+import time
 
 keyboard = Controller()
 arrowMap = {
@@ -29,13 +30,14 @@ def pressKey(key):
         pass
 
     keyboard.press(key)
-    keyboard.release(key)
+    time.sleep(0.07)
 
     # log them
     # with open('./keyEvent_log.txt', 'a') as f:
     #     f.write(str(datetime.datetime.now()) + " " + key + '\n')
 
     print('done')
+    keyboard.release(key)
 
 
 if __name__ == '__main__':
