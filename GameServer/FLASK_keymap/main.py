@@ -18,6 +18,11 @@ arrowMap = {
     'p2_skill1': lambda a: 2,
 }
 
+keyMap = {
+    '0': lambda k: keyboard.press(k)
+}
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hello_there1234'
 socketio = SocketIO(app)
@@ -32,7 +37,7 @@ def pressKey(key):
         pass
 
     keyboard.press(key)
-    time.sleep(0.07)
+    time.sleep(0.05)
 
     # log them
     with open('./keyEvent_log.txt', 'a') as f:

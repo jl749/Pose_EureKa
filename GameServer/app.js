@@ -20,6 +20,9 @@ io1.on('connection', (socket) => {
 		console.log(data);
 		
 		switch(data) {
+			case "p1_undef":
+				socketF.emit('key_execute', '-1')
+				break;
 			case "p1_punchL":
 				socketF.emit('key_execute', 'z')
 				break;
@@ -33,16 +36,16 @@ io1.on('connection', (socket) => {
 				socketF.emit('key_execute', 'v')
 				break;
 			case "p1_jump":
-				socketF.emit('key_execute', 0)
+				socketF.emit('key_execute', '0')
 				break;
 			case "p1_crouch":
-				socketF.emit('key_execute', 1)
+				socketF.emit('key_execute', '1')
 				break;
-			case "p1_left":
-				socketF.emit('key_execute', 2)
+			case "p1_moveL":
+				socketF.emit('key_execute', '2')
 				break;
-			case "p1_right":
-				socketF.emit('key_execute', 3)
+			case "p1_moveR":
+				socketF.emit('key_execute', '3')
 				break;
 			case "p1_powerL":
 				socketF.emit('key_execute', 'a')
@@ -50,8 +53,11 @@ io1.on('connection', (socket) => {
 			case "p1_powerR":
 				socketF.emit('key_execute', 's')
 				break;
-			case "p1_skill1":
-				socketF.emit('key_execute', 'p1_skill1')
+			case "p1_skill1L":
+				socketF.emit('key_execute', 'p1_skill1L')
+				break;
+			case "p1_skill1R":
+				socketF.emit('key_execute', 'p1_skill1R')
 				break;
 
 			case "p2_punchL":
@@ -67,16 +73,16 @@ io1.on('connection', (socket) => {
 				socketF.emit('key_execute', 'k')
 				break;
 			case "p2_jump":
-				socketF.emit('key_execute', 8)
+				socketF.emit('key_execute', '8')
 				break;
 			case "p2_crouch":
-				socketF.emit('key_execute', 5)
+				socketF.emit('key_execute', '5')
 				break;
-			case "p2_left":
-				socketF.emit('key_execute', 4)
+			case "p2_moveL":
+				socketF.emit('key_execute', '4')
 				break;
-			case "p2_right":
-				socketF.emit('key_execute', 6)
+			case "p2_moveR":
+				socketF.emit('key_execute', '6')
 				break;
 			case "p2_powerL":
 				socketF.emit('key_execute', 'y')

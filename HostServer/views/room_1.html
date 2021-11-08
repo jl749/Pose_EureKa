@@ -5,12 +5,32 @@
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <script src="data/loader.js"></script>
 </head>
 <body>
+    <div style="width:640px;height:480px;max-width:100%">
+        <div id="game"></div>
+    </div>
+
+    <button onclick="emitCommand('undef')">undef</button>
     <button onclick="emitCommand('punchL')">punchL</button>
     <button onclick="emitCommand('punchR')">punchR</button>
     <button onclick="emitCommand('jump')">jump</button>
+    <button onclick="emitCommand('moveL')">moveL</button>
+    <button onclick="emitCommand('moveR')">moveR</button>
+    <button onclick="emitCommand('crouch')">crouch</button>
+    <button onclick="emitCommand('skill1L')">skill1L</button>
+    <button onclick="emitCommand('skill1R')">skill1R</button>
+    
     <script type="text/javascript">
+        EJS_player = '#game';
+        EJS_gameUrl = './Street_Fighter_II_Turbo_U.smc'; // Url to Game rom
+        EJS_core = 'snes';
+        EJS_mouse = false;  // SNES Mouse
+        EJS_multitap = false;  // SNES Multitap
+        EJS_pathtodata = 'http://localhost:5000/data/';
+
+        
         const socket = io('http://localhost:5000/room_1');
         socket.on('connection', () => {
             console.log('clinet connected to server socket');
