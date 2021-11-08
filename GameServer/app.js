@@ -44,6 +44,49 @@ io1.on('connection', (socket) => {
 			case "p1_right":
 				socketF.emit('key_execute', 3)
 				break;
+			case "p1_powerL":
+				socketF.emit('key_execute', 'a')
+				break;
+			case "p1_powerR":
+				socketF.emit('key_execute', 's')
+				break;
+			case "p1_skill1":
+				socketF.emit('key_execute', 'p1_skill1')
+				break;
+
+			case "p2_punchL":
+				socketF.emit('key_execute', 'g')
+				break;
+			case "p2_punchR":
+				socketF.emit('key_execute', 'h')
+				break;
+			case "p2_kickL":
+				socketF.emit('key_execute', 'j')
+				break;
+			case "p2_kickR":
+				socketF.emit('key_execute', 'k')
+				break;
+			case "p2_jump":
+				socketF.emit('key_execute', 8)
+				break;
+			case "p2_crouch":
+				socketF.emit('key_execute', 5)
+				break;
+			case "p2_left":
+				socketF.emit('key_execute', 4)
+				break;
+			case "p2_right":
+				socketF.emit('key_execute', 6)
+				break;
+			case "p2_powerL":
+				socketF.emit('key_execute', 'y')
+				break;
+			case "p2_powerR":
+				socketF.emit('key_execute', 'u')
+				break;
+			case "p2_skill1":
+				socketF.emit('key_execute', 'p2_skill1')
+				break;
 		}
 	});
 

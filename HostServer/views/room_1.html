@@ -16,6 +16,11 @@
             console.log('clinet connected to server socket');
         });
 
+        socket.on('forceDisconnect', () => {
+            socket.disconnect();
+            console.log('room is full... you were kicked out');
+        });
+
         function emitCommand(cmd) {
             console.log(cmd);
             socket.emit('cmd', cmd);

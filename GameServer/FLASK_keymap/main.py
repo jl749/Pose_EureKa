@@ -14,6 +14,8 @@ arrowMap = {
     '5': 5,
     '6': 4,
     '7': 6,
+    'p1_skill1': lambda a: 1,
+    'p2_skill1': lambda a: 2,
 }
 
 app = Flask(__name__)
@@ -33,8 +35,11 @@ def pressKey(key):
     time.sleep(0.07)
 
     # log them
-    # with open('./keyEvent_log.txt', 'a') as f:
-    #     f.write(str(datetime.datetime.now()) + " " + key + '\n')
+    with open('./keyEvent_log.txt', 'a') as f:
+        f.write(str(datetime.datetime.now()))
+        f.write('__')
+        f.write(str(key))
+        f.write('\n')
 
     print('done')
     keyboard.release(key)

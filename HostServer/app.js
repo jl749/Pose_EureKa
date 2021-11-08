@@ -29,8 +29,8 @@ app.all('*', (req, res) => {
 });
 
 // 'http://172.22.77.5:3000'
-// 'http://192.168.43.146:3000'
-const game_server1 = 'http://localhost:3000';  // 
+// 'http://localhost:3000'
+const game_server1 = 'http://192.168.43.146:3000';
 var socket1 = io2.connect(game_server1);  // raspberry server 1
 socket1.on('connect', function () {
     console.log('host server connected to raspberry game server');
@@ -40,28 +40,33 @@ socket1.on('connect', function () {
 setRoom = (skt1, room, arr, skt2) => {
     skt1.on('connection', (socket) => {
         console.log(socket.id + ' entered ' + room);
-    
-        arr.push(socket.id);console.log(room + " : ", arr);
-        socket.join(room);
-    
-        socket.on('cmd', (data) => {
-            console.log(data);
-            
-            p_id = r1.indexOf(socket.id)+1
-            skt2.emit('cmd', "p" + p_id + "_" + data);  // pass command to game server (raspberry)
-            // skt1.to(room).emit('message', 'server reply to ' + room);  // acknowledgement
-            // socket.emit('message', 'server reply to ' + room);  // bck to clinet requested
-        });
-    
-        socket.on('disconnect', () => {
-            console.log(socket.id + ' left ' + room);
-            skt1.to(room).emit('userLeft', socket.id + ' left');  // broadcast everyone in the room
 
-            socket.leave(room);
+        if(arr.length > 1){
+            socket.emit('forceDisconnect');
+            console.log('forceDisconnect - ' + socket.id);
+        }else{
+            arr.push(socket.id);console.log(room + " : ", arr);
+            socket.join(room);
+    
+            socket.on('cmd', (data) => {
+                console.log(data);
+                
+                p_id = r1.indexOf(socket.id)+1
+                skt2.emit('cmd', "p" + p_id + "_" + data);  // pass command to game server (raspberry)
+                // skt1.to(room).emit('message', 'server reply to ' + room);  // acknowledgement
+                // socket.emit('message', 'server reply to ' + room);  // bck to clinet requested
+            });
+        
+            socket.on('disconnect', () => {
+                console.log(socket.id + ' left ' + room);
+                skt1.to(room).emit('userLeft', socket.id + ' left');  // broadcast everyone in the room
 
-            let i = arr.indexOf(socket);
-            arr.splice(i, 1);
-        });
+                socket.leave(room);
+
+                let i = arr.indexOf(socket);
+                arr.splice(i, 1);
+            });
+        }        
     });
 }
 
