@@ -5,21 +5,76 @@ import datetime
 import time
 
 keyboard = Controller()
-arrowMap = {
-    '0': Key.up,
-    '1': Key.down,
-    '2': Key.left,
-    '3': Key.right,
-    '4': 8,
-    '5': 5,
-    '6': 4,
-    '7': 6,
-    'p1_skill1': lambda a: 1,
-    'p2_skill1': lambda a: 2,
-}
+
+
+def p1_releaseAll():
+    keyboard.release(Key.up)
+    keyboard.release(Key.down)
+    keyboard.release(Key.left)
+    keyboard.release(Key.right)
+
+
+def p2_releaseAll():
+    keyboard.release('8')
+    keyboard.release('5')
+    keyboard.release('4')
+    keyboard.release('6')
+
+
+def p1_skill1(direction: bool):  # 0 for facing right, 1 for facing reverse
+    p1_releaseAll()
+    keyboard.press(Key.down)
+
+    tmp = Key.right if direction else Key.left
+    keyboard.press(tmp)
+    time.sleep(0.1)
+    keyboard.release(Key.down)
+    time.sleep(0.02)
+    keyboard.press('z')
+
+    time.sleep(0.07)
+    keyboard.release(tmp)
+
+    keyboard.release('z')
+
+
+def p2_skill1(direction: bool):  # 0 for facing left, 1 for facing right
+    p2_releaseAll()
+    keyboard.press('5')
+    time.sleep(0.04)
+    tmp = '4' if direction else '6'
+    keyboard.press(tmp)
+    keyboard.release('5')
+    time.sleep(0.04)
+    keyboard.press('g')
+    keyboard.release(tmp)
+    time.sleep(0.02)
+    keyboard.release('g')
+
+
+def nextMoveRelease(playerN: bool, newCmd):  # 0 for p1, 1 for p2
+    if playerN:
+        p1_releaseAll()
+    else:
+        p2_releaseAll()
+    newCmd()
+
 
 keyMap = {
-    '0': lambda k: keyboard.press(k)
+    '-1': lambda: p1_releaseAll(),
+    '0': lambda: nextMoveRelease(True, lambda: keyboard.press(Key.up)),
+    '1': lambda: nextMoveRelease(True, lambda: keyboard.press(Key.down)),
+    '2': lambda: nextMoveRelease(True, lambda: keyboard.press(Key.left)),
+    '3': lambda: nextMoveRelease(True, lambda: keyboard.press(Key.right)),
+    '-2': lambda: p2_releaseAll(),
+    '4': lambda: nextMoveRelease(False, lambda: keyboard.press('8')),
+    '5': lambda: nextMoveRelease(False, lambda: keyboard.press('5')),
+    '6': lambda: nextMoveRelease(False, lambda: keyboard.press('4')),
+    '7': lambda: nextMoveRelease(False, lambda: keyboard.press('6')),
+    'p1_skill1R': lambda: p1_skill1(True),
+    'p2_skill1L': lambda: p2_skill1(True),
+    'p1_skill1L': lambda: p1_skill1(False),
+    'p2_skill1R': lambda: p2_skill1(False),
 }
 
 
@@ -31,23 +86,29 @@ socketio = SocketIO(app)
 @socketio.on('key_execute')
 def pressKey(key):
     print("Pressing Key:", key, end=' ... ')
-    try:
-        key = arrowMap[key]
-    except KeyError:
-        pass
+    flag = False
 
-    keyboard.press(key)
-    time.sleep(0.05)
+    try:
+        keyMap[key]()
+        flag = True
+    except KeyError:
+        keyboard.press(key)
+        if key in ['a', 's', 'z', 'x', 'c', 'v']:
+            p1_releaseAll()
+        else:
+            p2_releaseAll()
+        time.sleep(0.02)
 
     # log them
     with open('./keyEvent_log.txt', 'a') as f:
         f.write(str(datetime.datetime.now()))
-        f.write('__')
+        f.write(' ... ')
         f.write(str(key))
         f.write('\n')
 
     print('done')
-    keyboard.release(key)
+    if not flag:
+        keyboard.release(key)
 
 
 if __name__ == '__main__':
