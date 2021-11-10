@@ -6,15 +6,25 @@ const io2 = require("socket.io-client");
 
 const PORT = 3000;
 
+
+var stream = io1.of('/stream');
+
+
+app.get('/stream_page', (req, res) => {
+    res.sendFile(__dirname + '/views/stream_page.html');
+});
+
 const flask = 'http://localhost:8000';
 var socketF = io2.connect(flask);
 socketF.on('connect', function () {
     console.log('GameServer connected to Flask');
 });
 
-io1.on('connection', (socket) => {
-
-	console.log('room1 connected');
+io1.of('/flask').on('connection', (socket) => {
+	// console.log('room1 connected');
+	socket.on('message', (message) => {
+		console.log(message);
+	});
 
 	socket.on('cmd', (data) => {
 		console.log(data);
@@ -96,8 +106,22 @@ io1.on('connection', (socket) => {
 		}
 	});
 
+	// when server receives an offer hand it(SDP) over to the target, A -> B
+	socket.on('pass_offer', (offer) => {
+		console.log(offer);
+		stream.emit('offer', offer);
+	});
+	// when server receives answer from the target hand it over to the sender, B -> A
+	socket.on('answer', (payload) => {
+		io1.to(payload.target).emit('answer', payload);
+	});
+	// ice candiates to be agreed between A and B
+	socket.on('ice-candidate', (incoming) => {
+		io1.to(incoming.target).emit('ice-candidate', incoming.candidate);
+	});
+
 	socket.on('disconnect', () => {
-		console.log('room1 disconnected');
+		console.log('host server room1 disconnected');
 	});
 });
 

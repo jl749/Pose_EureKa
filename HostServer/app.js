@@ -30,11 +30,14 @@ app.all('*', (req, res) => {
 
 // 'http://172.22.77.5:3000'
 // 'http://192.168.43.146:3000'
-const game_server1 = 'http://localhost:3000';
+const game_server1 = 'http://localhost:3000/flask';
 var socket1 = io2.connect(game_server1);  // raspberry server 1
 socket1.on('connect', function () {
     console.log('host server connected to raspberry game server');
-    // socket1.emit('message', 'host server connected to raspberry no.1');
+    socket1.emit('message', 'host server connected to GameServer_1');
+});
+socket1.on('disconnect', function() {
+    console.log('game server connection lost');
 });
 
 setRoom = (skt1, room, arr, skt2) => {
@@ -56,6 +59,11 @@ setRoom = (skt1, room, arr, skt2) => {
                 // skt1.to(room).emit('message', 'server reply to ' + room);  // acknowledgement
                 // socket.emit('message', 'server reply to ' + room);  // bck to clinet requested
             });
+
+            socket.on('offer', (offer) => {
+                console.log(offer);
+                skt2.emit('pass_offer', offer);
+            });
         
             socket.on('disconnect', () => {
                 console.log(socket.id + ' left ' + room);
@@ -66,7 +74,7 @@ setRoom = (skt1, room, arr, skt2) => {
                 let i = arr.indexOf(socket);
                 arr.splice(i, 1);
             });
-        }        
+        }
     });
 }
 
@@ -76,6 +84,7 @@ setRoom(room1, 'room_1', r1, socket1);
 // setRoom(room2, 'room_2', r2);
 // const room3 = io1.of('/room_3');
 // setRoom(room3, 'room_3', r3);
+
 
 
 server.listen(PORT, () => {
