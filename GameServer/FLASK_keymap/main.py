@@ -26,16 +26,19 @@ def p1_skill1(direction: bool):  # 0 for facing right, 1 for facing reverse
     keyboard.press(Key.down)
 
     tmp = Key.right if direction else Key.left
+    time.sleep(0.05)
     keyboard.press(tmp)
-    time.sleep(0.1)
+    time.sleep(0.03)
     keyboard.release(Key.down)
-    time.sleep(0.02)
-    keyboard.press('z')
+    time.sleep(0.05)
+    keyboard.press('c')
 
-    time.sleep(0.07)
+    time.sleep(0.05)
     keyboard.release(tmp)
+    time.sleep(0.1)
 
-    keyboard.release('z')
+    keyboard.release('c')
+    time.sleep(0.3)
 
 
 def p2_skill1(direction: bool):  # 0 for facing left, 1 for facing right
