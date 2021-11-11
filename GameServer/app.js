@@ -6,22 +6,33 @@ const io2 = require("socket.io-client");
 
 const PORT = 3000;
 
-
+var host_server = io1.of('/host_server');
 var stream = io1.of('/stream');
+stream.on('connection', (socket) => {
+	socket.on('answer', (answer) => {  // from stream page
+		host_server.emit('pass_ answer', answer);
+	});
+
+	socket.on('candidate', (candidate) => {
+		console.log('[webRTC] candidate sent');
+		host_server.emit('pass_candidate', candidate);
+	});
+});
 
 
 app.get('/stream_page', (req, res) => {
     res.sendFile(__dirname + '/views/stream_page.html');
 });
 
-const flask = 'http://localhost:8000';
-var socketF = io2.connect(flask);
+const flask_server = 'http://localhost:8000';
+var socketF = io2.connect(flask_server);
 socketF.on('connect', function () {
     console.log('GameServer connected to Flask');
 });
 
-io1.of('/flask').on('connection', (socket) => {
-	// console.log('room1 connected');
+
+
+host_server.on('connection', (socket) => {
 	socket.on('message', (message) => {
 		console.log(message);
 	});
@@ -106,18 +117,18 @@ io1.of('/flask').on('connection', (socket) => {
 		}
 	});
 
+
 	// when server receives an offer hand it(SDP) over to the target, A -> B
-	socket.on('pass_offer', (offer) => {
-		console.log(offer);
-		stream.emit('offer', offer);
-	});
-	// when server receives answer from the target hand it over to the sender, B -> A
-	socket.on('answer', (payload) => {
-		io1.to(payload.target).emit('answer', payload);
+	socket.on('pass_offer', (offer, id) => {
+		console.log('[webRTC] offer received');
+		stream.emit('offer', offer, id);
 	});
 	// ice candiates to be agreed between A and B
-	socket.on('ice-candidate', (incoming) => {
-		io1.to(incoming.target).emit('ice-candidate', incoming.candidate);
+	socket.on('pass_candidate', (candidate, id) => {
+		stream.emit('candidate', candidate, id);
+	});
+	socket.on('webRTC_leave', (id) => {
+		stream.emit('webRTC_leave', id);
 	});
 
 	socket.on('disconnect', () => {

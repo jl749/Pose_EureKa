@@ -10,20 +10,63 @@
     </div>
     
     <script type="text/javascript">
-        const localStream = navigator.mediaDevices.getUserMedia({video: true, audio: true});
+        var remoteConnections = {};  // { ID: [RTCPeerConnection, cand1, cand2 ...] }
+        // const localStream = navigator.mediaDevices.getUserMedia({video: true, audio: true});
 
-        
+        window.onunload = window.onbeforeunload = function() {
+            socket.close();
+        };
+
         
         const socket = io('http://localhost:3000/stream');
         socket.on('connect', () => {
             console.log('browser connected to server socket');
         });
 
-        socket.on('offer', (offer) => {
-            console.log(offer);
+        socket.on('offer', (offer, id) => {
+            console.log('offer received: ', offer);
+
+            if( !(id in remoteConnections) ){
+                remoteConnections[id] = [];
+            }
+            remoteConnections[id] = new RTCPeerConnection();
+
+            let rc = remoteConnections[id];
+
+            rc.ondatachannel = e => {
+                // data channel created
+                rc.dc = e.channel;
+                rc.dc.onmessage = e => console.log('msg form client: ', e.data);
+                rc.dc.onopen = e => console.log(id + ': webRTC opened');
+
+                rc.dc.send('TEST');
+            }
+
+            rc.onicecandidate = (e) => {
+                if(e.candidate)
+                    socket.emit('candidate', e.candidate);
+            }
+
+            rc.setRemoteDescription(offer).then(a=>console.log('offer set: ' + id));
+            
+            rc.createAnswer( (answer)=> {
+                rc.setLocalDescription(answer);
+                console.log("answer created", answer);
+                socket.emit('answer', answer);
+            }, err => console.log(err));
         });
 
+        socket.on('candidate', (candidate, id) => {
+            remoteConnections[id].addIceCandidate(candidate);
 
+
+            console.log('client joined', remoteConnections);
+        });
+
+        socket.on('webRTC_leave', (id) => {
+            delete remoteConnections[id];
+            console.log('client left', remoteConnections);
+        });
     </script>
     
 </body>

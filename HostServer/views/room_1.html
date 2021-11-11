@@ -7,7 +7,7 @@
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div><button onclick="startWebRTC()">startWebRTC</button></div>
+    <div><button onclick=TEST()>TEST</button></div>
 
     <div>
         <button onclick="emitCommand('undef')">undef</button>
@@ -23,36 +23,62 @@
     
     <script type="text/javascript">
         const socket = io('http://localhost:5000/room_1');
-        socket.on('connect', () => {
-            console.log('clinet connected to host server socket');
-        });
 
-        function startWebRTC() {
-            let lc = new RTCPeerConnection();  // local connection
-            let dc = lc.createDataChannel("channel");  // data channel
-
-            dc.onmessage = (e) => console.log('msg arrived: ', e.data);
-            dc.onopen = (e) => console.log('--connection opened between web browsers--');
-
-            // print everyime ICE candidate detected (until no more ICE found)
-            // lc.onicecandidate = (e) => console.log('new ICE candidate, reprint SDP: ', JSON.stringify(lc.localDescription));
-
-            lc.createOffer( (offer) => {
-                lc.setLocalDescription(offer);
-                console.log(offer);
-                socket.emit('offer', offer);
-            }, err => console.log(err));
-        }
-
-        socket.on('forceDisconnect', () => {
-            socket.disconnect();
-            console.log('room is full... you are disconnected');
-        });
+        window.onunload = window.onbeforeunload = function() {
+            socket.close();
+        };
 
         function emitCommand(cmd) {
             console.log(cmd);
             socket.emit('cmd', cmd);
         }
+        function TEST() {
+            dc.send('hi there');
+        }
+
+
+        const lc = new RTCPeerConnection();  // local connection
+        const dc = lc.createDataChannel("channel");  // data channel
+        socket.on('connect', () => {
+            console.log('client connected to host server socket');
+
+            dc.onmessage = (e) => console.log('msg arrived: ', e.data);
+            dc.onopen = (e) => console.log('webRTC opened');
+
+            // update everytime ICE candidate detected (until no more ICE found)
+            lc.onicecandidate = (e) => {
+                if(e.candidate){
+                    // console.log(lc.localDescription);
+                    socket.emit('candidate', e.candidate);
+                    // lc.addIceCandidate(e.candidate).catch(e => {
+                    //     console.log("Failure during addIceCandidate(): " + e.name);
+                    // });
+                }
+            };
+
+            lc.createOffer( (offer) => {
+                lc.setLocalDescription(offer);
+                console.log('offer created', offer);
+                socket.emit('offer', offer);
+            }, err => console.log(err));
+            
+            
+        });
+        socket.on('candidate', (candidate) => {
+            // console.log(candidate);
+            lc.addIceCandidate(candidate);
+        });
+
+        socket.on('answer', (answer) => {
+            console.log('answer received', answer);
+            lc.setRemoteDescription(answer).then(a=>console.log('answer set'));
+            // dc.send('hi there');
+        });
+
+        socket.on('forceDisconnect', () => {
+            socket.disconnect();
+            console.log('room is full... you are disconnected');
+        });
 
         socket.on("disconnect", (reason) => {
             if (reason === "io server disconnect") {    
