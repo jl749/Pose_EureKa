@@ -5,10 +5,10 @@
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <div><button onclick=TEST()>TEST</button></div>
-    <div><video id="video" autoplay></video></div>
+    <div><img style="width: 90%; height: 90%; margin-top: 2%; margin-left: 5%"/></div>
 
     <div>
         <button onclick="emitCommand('undef')">undef</button>
@@ -23,81 +23,39 @@
     </div>
     
     <script type="text/javascript">
-        const socket = io('http://localhost:5000/room_1');
-        const video = document.querySelector("video");
+        window.onload = function() {
+            const socket = io('http://localhost:5000/room_1');
 
-        window.onunload = window.onbeforeunload = function() {
-            socket.close();
-        };
-
-        function emitCommand(cmd) {
-            console.log(cmd);
-            socket.emit('cmd', cmd);
-        }
-        function TEST() {
-            dc.send('hi there');
-        }
-
-
-        // local connection
-        const lc = new RTCPeerConnection({configuration: {
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true
-        }});
-        const dc = lc.createDataChannel("channel");  // data channel
-        socket.on('connect', () => {
-            console.log('client connected to host server socket');
-
-            dc.onmessage = (e) => console.log('msg arrived: ', e.data);
-            dc.onopen = (e) => console.log('webRTC opened');
-
-            // update everytime ICE candidate detected (until no more ICE found)
-            lc.onicecandidate = (e) => {
-                if(e.candidate){
-                    // console.log(lc.localDescription);
-                    socket.emit('candidate', e.candidate);
-                    // lc.addIceCandidate(e.candidate).catch(e => {
-                    //     console.log("Failure during addIceCandidate(): " + e.name);
-                    // });
-                }
+            window.onunload = window.onbeforeunload = function() {
+                socket.close();
             };
 
-            lc.createOffer( (offer) => {
-                lc.setLocalDescription(offer);
-                console.log('offer created', offer);
-                socket.emit('offer', offer);
-            }, err => console.log(err));
-            
-            
-        });
-        socket.on('candidate', (candidate) => {
-            // console.log(candidate);
-            lc.addIceCandidate(candidate);
-        });
+            function emitCommand(cmd) {
+                console.log(cmd);
+                socket.emit('cmd', cmd);
+            }
 
-        socket.on('answer', (answer) => {
-            console.log('answer received', answer);
-            lc.setRemoteDescription(answer).then(a=>console.log('answer set'));
-            // dc.send('hi there');
+            socket.on('connect', () => {
+                console.log('client connected to host server socket');
+            });
 
-            lc.ontrack = e => {
-                console.log('accepted'); //?????
-                video.srcObject = e.streams[0];
-            };
-        });
+            socket.on('screen', (imgStr) => {
+                $('img').attr('src', 'data:image/png;base64,' + imgStr);
+            });
 
-        socket.on('forceDisconnect', () => {
-            socket.disconnect();
-            console.log('room is full... you are disconnected');
-        });
+            socket.on('forceDisconnect', () => {
+                socket.disconnect();
+                console.log('room is full... you are disconnected');
+            });
 
-        socket.on("disconnect", (reason) => {
-            if (reason === "io server disconnect") {    
-                // the disconnection was initiated by the server, you need to reconnect manually    
-                socket.connect();  
-            }  
-            // else the socket will automatically try to reconnect
-        });
+            socket.on("disconnect", (reason) => {
+                if (reason === "io server disconnect") {    
+                    // the disconnection was initiated by the server, you need to reconnect manually    
+                    socket.connect();  
+                }  
+                // else the socket will automatically try to reconnect
+            });
+        }
     </script>
     
 </body>

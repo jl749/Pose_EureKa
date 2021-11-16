@@ -3,26 +3,10 @@ const app = express();
 const server = require('http').createServer(app);
 const io1 = require('socket.io')(server, { cors: { origin: "*" } });
 const io2 = require("socket.io-client");
+const screenshot = require('screenshot-desktop');
 
 const PORT = 3000;
-
-var host_server = io1.of('/host_server');
-var stream = io1.of('/stream');
-stream.on('connection', (socket) => {
-	socket.on('answer', (answer) => {  // from stream page
-		host_server.emit('pass_ answer', answer);
-	});
-
-	socket.on('candidate', (candidate) => {
-		console.log('[webRTC] candidate sent');
-		host_server.emit('pass_candidate', candidate);
-	});
-});
-
-
-app.get('/stream_page', (req, res) => {
-    res.sendFile(__dirname + '/views/stream_page.html');
-});
+var interval;
 
 const flask_server = 'http://localhost:8000';
 var socketF = io2.connect(flask_server);
@@ -32,10 +16,18 @@ socketF.on('connect', function () {
 
 
 
-host_server.on('connection', (socket) => {
+io1.on('connection', (socket) => {
 	socket.on('message', (message) => {
 		console.log(message);
 	});
+
+	interval = setInterval(function() {
+		screenshot().then((img) => {
+			var imgStr = Buffer.from(img).toString('base64');
+			
+			socket.emit('screen', imgStr);
+		});
+	}, 100);
 
 	socket.on('cmd', (data) => {
 		console.log(data);
@@ -117,18 +109,9 @@ host_server.on('connection', (socket) => {
 		}
 	});
 
-
-	// when server receives an offer hand it(SDP) over to the target, A -> B
-	socket.on('pass_offer', (offer, id) => {
-		console.log('[webRTC] offer received');
-		stream.emit('offer', offer, id);
-	});
-	// ice candiates to be agreed between A and B
-	socket.on('pass_candidate', (candidate, id) => {
-		stream.emit('candidate', candidate, id);
-	});
-	socket.on('webRTC_leave', (id) => {
-		stream.emit('webRTC_leave', id);
+	socket.on('stop-sharing', () => {
+		// console.log('stop streaming');
+		// clearInterval(interval);
 	});
 
 	socket.on('disconnect', () => {
