@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <div><img style="width: 90%; height: 90%; margin-top: 2%; margin-left: 5%"/></div>
+    <div><img style="width: 50%; height: 50%; margin-top: 2%; margin-left: 5%"/></div>
 
     <div>
         <button onclick="emitCommand('undef')">undef</button>
@@ -23,39 +23,37 @@
     </div>
     
     <script type="text/javascript">
-        window.onload = function() {
-            const socket = io('http://localhost:5000/room_1');
+        const socket = io('http://localhost:5000/room_1');
 
-            window.onunload = window.onbeforeunload = function() {
-                socket.close();
-            };
+        window.onunload = window.onbeforeunload = function() {
+            socket.close();
+        };
 
-            function emitCommand(cmd) {
-                console.log(cmd);
-                socket.emit('cmd', cmd);
-            }
-
-            socket.on('connect', () => {
-                console.log('client connected to host server socket');
-            });
-
-            socket.on('screen', (imgStr) => {
-                $('img').attr('src', 'data:image/png;base64,' + imgStr);
-            });
-
-            socket.on('forceDisconnect', () => {
-                socket.disconnect();
-                console.log('room is full... you are disconnected');
-            });
-
-            socket.on("disconnect", (reason) => {
-                if (reason === "io server disconnect") {    
-                    // the disconnection was initiated by the server, you need to reconnect manually    
-                    socket.connect();  
-                }  
-                // else the socket will automatically try to reconnect
-            });
+        function emitCommand(cmd) {
+            console.log(cmd);
+            socket.emit('cmd', cmd);
         }
+
+        socket.on('connect', () => {
+            console.log('client connected to host server socket');
+        });
+
+        socket.on('screen', (imgStr) => {
+            $('img').attr('src', 'data:image/png;base64,' + imgStr);
+        });
+
+        socket.on('forceDisconnect', () => {
+            socket.disconnect();
+            console.log('room is full... you are disconnected');
+        });
+
+        socket.on("disconnect", (reason) => {
+            if (reason === "io server disconnect") {    
+                // the disconnection was initiated by the server, you need to reconnect manually    
+                socket.connect();  
+            }  
+            // else the socket will automatically try to reconnect
+        });
     </script>
     
 </body>

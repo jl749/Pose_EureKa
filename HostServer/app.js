@@ -30,7 +30,7 @@ app.all('*', (req, res) => {
 
 // 'http://172.22.77.5:3000'
 // 'http://192.168.43.146:3000'
-const game_server1 = 'http://localhost:3000';
+const game_server1 = 'http://192.168.0.4:3000';
 var socket1 = io2.connect(game_server1);  // raspberry server 1
 socket1.on('connect', function () {
     console.log('game server connected to host server');
