@@ -8,6 +8,7 @@
 </head>
 <body>
     <div><button onclick=TEST()>TEST</button></div>
+    <div><video id="video" autoplay></video></div>
 
     <div>
         <button onclick="emitCommand('undef')">undef</button>
@@ -23,6 +24,7 @@
     
     <script type="text/javascript">
         const socket = io('http://localhost:5000/room_1');
+        const video = document.querySelector("video");
 
         window.onunload = window.onbeforeunload = function() {
             socket.close();
@@ -37,7 +39,11 @@
         }
 
 
-        const lc = new RTCPeerConnection();  // local connection
+        // local connection
+        const lc = new RTCPeerConnection({configuration: {
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+        }});
         const dc = lc.createDataChannel("channel");  // data channel
         socket.on('connect', () => {
             console.log('client connected to host server socket');
@@ -73,6 +79,11 @@
             console.log('answer received', answer);
             lc.setRemoteDescription(answer).then(a=>console.log('answer set'));
             // dc.send('hi there');
+
+            lc.ontrack = e => {
+                console.log('accepted'); //?????
+                video.srcObject = e.streams[0];
+            };
         });
 
         socket.on('forceDisconnect', () => {

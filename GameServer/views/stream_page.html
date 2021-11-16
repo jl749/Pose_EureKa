@@ -6,12 +6,44 @@
 </head>
 <body>
     <div>
-        <video id='video' autoplay playsinline></video>
+        <!-- <video id='video' autoplay playsinline></video> -->
+        <video id="video" autoplay></video>
     </div>
     
     <script type="text/javascript">
         var remoteConnections = {};  // { ID: [RTCPeerConnection, cand1, cand2 ...] }
         // const localStream = navigator.mediaDevices.getUserMedia({video: true, audio: true});
+
+
+        const video = document.querySelector("video");
+        var constraints = {
+            video: true,
+            audio: true
+        };
+        const startCaptrue = async => {
+            return navigator.mediaDevices.getDisplayMedia(constraints)
+                .catch(err => { console.error("Error:" + err); return null; });
+        }
+        // async function startCapture() {
+        //     try {
+        //         video.srcObject = await navigator.mediaDevices.getDisplayMedia(constraints);
+        //     } catch(err) {
+        //         console.error("Error: " + err);
+        //     }
+        // }
+        startCaptrue()
+            .then(stream => video.srcObject = stream)
+            .then(stream => console.log('DisplayMedia', stream));
+
+
+
+        // navigator.mediaDevices
+        //     .getUserMedia(constraints)
+        //     .then(stream => {
+        //         video.srcObject = stream;
+        //         // socket.emit("broadcaster");
+        //     })
+        //     .catch(error => console.error(error));
 
         window.onunload = window.onbeforeunload = function() {
             socket.close();
@@ -26,26 +58,36 @@
         socket.on('offer', (offer, id) => {
             console.log('offer received: ', offer);
 
-            if( !(id in remoteConnections) ){
+            if( !remoteConnections[id] ){
                 remoteConnections[id] = [];
             }
-            remoteConnections[id] = new RTCPeerConnection();
-
+            remoteConnections[id] =  new RTCPeerConnection({configuration: {
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true
+            }});
+            
             let rc = remoteConnections[id];
-
+                        
+            // everytime there's new offer (client) -> add local stream to the connection using addTrack() passing stream/track data
+            var stream = video.srcObject;
+            stream.getTracks().forEach( (track) => {
+                rc.addTrack(track, stream);
+                // console.log(track, stream, rc);
+            });
+            
             rc.ondatachannel = e => {
                 // data channel created
                 rc.dc = e.channel;
                 rc.dc.onmessage = e => console.log('msg form client: ', e.data);
                 rc.dc.onopen = e => console.log(id + ': webRTC opened');
 
-                rc.dc.send('TEST');
-            }
+                // rc.dc.send('TEST msg');
+            };
 
             rc.onicecandidate = (e) => {
                 if(e.candidate)
                     socket.emit('candidate', e.candidate);
-            }
+            };
 
             rc.setRemoteDescription(offer).then(a=>console.log('offer set: ' + id));
             
@@ -54,6 +96,10 @@
                 console.log("answer created", answer);
                 socket.emit('answer', answer);
             }, err => console.log(err));
+
+            // rc.ontrack = e => {
+            //     video.srcObject = e.streams[0];
+            // };
         });
 
         socket.on('candidate', (candidate, id) => {
@@ -64,8 +110,12 @@
         });
 
         socket.on('webRTC_leave', (id) => {
-            delete remoteConnections[id];
-            console.log('client left', remoteConnections);
+            if(remoteConnections[id]){
+                remoteConnections[id].close();
+            
+                delete remoteConnections[id];
+                console.log('client left', remoteConnections);
+            }
         });
     </script>
     
