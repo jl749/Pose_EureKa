@@ -8,8 +8,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <div><img style="width: 50%; height: 50%; margin-top: 2%; margin-left: 5%"/></div>
-
+    <div><img style="width: 400px; height: 300px; margin-top: 2%; margin-left: 5%"/></div>
+    <div>
+        <button onclick="start_stream()">Stream The Game</button>
+    </div>
     <div>
         <button onclick="emitCommand('undef')">undef</button>
         <button onclick="emitCommand('punchL')">punchL</button>
@@ -32,6 +34,9 @@
         function emitCommand(cmd) {
             console.log(cmd);
             socket.emit('cmd', cmd);
+        }
+        function start_stream() {
+            socket.emit('start_stream');
         }
 
         socket.on('connect', () => {

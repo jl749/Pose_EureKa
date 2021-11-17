@@ -30,14 +30,13 @@ app.all('*', (req, res) => {
 
 // 'http://172.22.77.5:3000'
 // 'http://192.168.43.146:3000'
-const game_server1 = 'http://localhost:3000';
+const game_server1 = 'http://192.168.0.7:3000';
 var socket1 = io2.connect(game_server1);  // raspberry server 1
 socket1.on('connect', function () {
     console.log('game server connected to host server');
-    socket1.emit('message', 'host server connected to GameServer_1');
+    socket1.emit('message', 'connected to HostServer');
 });
 socket1.on('screen', (imgStr) => {
-    // console.log('img update');
     rooms.to('room_1').emit('screen', imgStr);
 });
 
@@ -64,6 +63,11 @@ setRoom = (skt1, room, arr, skt2) => {
                 // skt1.to(room).emit('message', 'server reply to ' + room);  // acknowledgement
                 // socket.emit('message', 'server reply to ' + room);  // bck to clinet requested
             });
+
+            socket.on('start_stream', () => {
+                console.log('ddd');
+                skt2.emit('start_stream');
+            });
         
             socket.on('disconnect', () => {
                 console.log(socket.id + ' left ' + room);
@@ -75,7 +79,7 @@ setRoom = (skt1, room, arr, skt2) => {
                 arr.splice(i, 1);
 
                 if(arr.length == 0){
-                    skt2.emit('stop-sharing');
+                    skt2.emit('stop_stream');
                 }
             });
         }

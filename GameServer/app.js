@@ -15,31 +15,14 @@ socketF.on('connect', function () {
 });
 
 
+var process;
+var stream;
 
 io1.on('connection', (socket) => {
 	socket.on('message', (message) => {
 		console.log(message);
 	});
 
-	const process = spawn(
-		ffmpeg,
-		// -video_size 640x480-framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast
-		["-f", "gdigrab", "-framerate", "30", "-i", "desktop", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
-		{ stdio: "pipe" }
-	);
-	
-	const stream = process.stdout;
-	
-	stream.on('data', chunk => {
-		const imgStr = Buffer.from(chunk).toString('base64');
-		// const imgStr = chunk.toString('base64');
-	  
-		socket.emit('screen', imgStr);
-		// const data = `data:image/png;base64,${imgStr}`;
-		// const image = new Image();
-		// image.src = data;
-		// ctx.drawImage(image, 0, 0);
-	});
 
 	socket.on('cmd', (data) => {
 		console.log(data);
@@ -121,9 +104,34 @@ io1.on('connection', (socket) => {
 		}
 	});
 
-	socket.on('stop-sharing', () => {
-		// console.log('stop streaming');
+	socket.on('start_stream', () => {
+		console.log('start streaming');
+		process = spawn(
+			ffmpeg,
+			// Linux
+			["-video_size", "600x800", "-framerate", "30", "-f", "x11grab", "-i", ":0.0+0,0", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
+			// Windows
+			// ["-f", "gdigrab", "-framerate", "30", "-i", "desktop", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
+			{ stdio: "pipe" }
+		);
 		
+		stream = process.stdout;
+		stream.on('data', chunk => {
+			const imgStr = Buffer.from(chunk).toString('base64');
+			// const imgStr = chunk.toString('base64');
+		  
+			socket.emit('screen', imgStr);
+			// const data = `data:image/png;base64,${imgStr}`;
+			// const image = new Image();
+			// image.src = data;
+			// ctx.drawImage(image, 0, 0);
+		});
+	});
+	socket.on('stop_stream', () => {
+		if(process){
+			console.log('stop streaming');
+			process.kill();
+		}
 	});
 
 	socket.on('disconnect', () => {
