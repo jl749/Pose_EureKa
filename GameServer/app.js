@@ -3,10 +3,10 @@ const app = express();
 const server = require('http').createServer(app);
 const io1 = require('socket.io')(server, { cors: { origin: "*" } });
 const io2 = require("socket.io-client");
-const screenshot = require('screenshot-desktop');
+const ffmpeg = require('ffmpeg-static');
+const { spawn } = require("child_process");
 
 const PORT = 3000;
-var interval;
 
 const flask_server = 'http://localhost:8000';
 var socketF = io2.connect(flask_server);
@@ -21,13 +21,25 @@ io1.on('connection', (socket) => {
 		console.log(message);
 	});
 
-	interval = setInterval(function() {
-		screenshot().then((img) => {
-			var imgStr = Buffer.from(img).toString('base64');
-			
-			socket.emit('screen', imgStr);
-		});
-	}, 100);
+	const process = spawn(
+		ffmpeg,
+		// -video_size 640x480-framerate 30 -f x11grab -i :0.0+0,0 -c:v libx264rgb -crf 0 -preset ultrafast
+		["-f", "gdigrab", "-framerate", "30", "-i", "desktop", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
+		{ stdio: "pipe" }
+	);
+	
+	const stream = process.stdout;
+	
+	stream.on('data', chunk => {
+		const imgStr = Buffer.from(chunk).toString('base64');
+		// const imgStr = chunk.toString('base64');
+	  
+		socket.emit('screen', imgStr);
+		// const data = `data:image/png;base64,${imgStr}`;
+		// const image = new Image();
+		// image.src = data;
+		// ctx.drawImage(image, 0, 0);
+	});
 
 	socket.on('cmd', (data) => {
 		console.log(data);
@@ -111,7 +123,7 @@ io1.on('connection', (socket) => {
 
 	socket.on('stop-sharing', () => {
 		// console.log('stop streaming');
-		// clearInterval(interval);
+		
 	});
 
 	socket.on('disconnect', () => {
