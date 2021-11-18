@@ -109,7 +109,7 @@ io1.on('connection', (socket) => {
 		process = spawn(
 			ffmpeg,
 			// Linux
-			["-video_size", "600x800", "-framerate", "30", "-f", "x11grab", "-i", ":0.0+0,0", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
+			["-video_size", "500x380", "-framerate", "30", "-f", "x11grab", "-i", ":0.0+80,130", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
 			// Windows
 			// ["-f", "gdigrab", "-framerate", "30", "-i", "desktop", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
 			{ stdio: "pipe" }
