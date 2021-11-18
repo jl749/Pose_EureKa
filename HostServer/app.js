@@ -39,10 +39,10 @@ socket1.on('connect', function () {
 socket1.on('screen', (imgStr) => {
     rooms.to('room_1').emit('screen', imgStr);
 });
-
 socket1.on('disconnect', function() {
     console.log('game server connection lost');
 });
+
 
 setRoom = (skt1, room, arr, skt2) => {
     skt1.on('connection', (socket) => {
@@ -65,7 +65,6 @@ setRoom = (skt1, room, arr, skt2) => {
             });
 
             socket.on('start_stream', () => {
-                console.log('ddd');
                 skt2.emit('start_stream');
             });
         
