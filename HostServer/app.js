@@ -4,29 +4,6 @@ const server = require('http').createServer(app);
 const io1 = require('socket.io')(server, { cors: { origin: "*" } });
 const io2 = require("socket.io-client");
 
-const tf = require('@tensorflow/tfjs');
-// '@tensorflow/tfjs-node-gpu' if running with GPU.
-const tfn = require('@tensorflow/tfjs-node');
-var model;
-const CLASSES = ['crouch',
-    'jump',
-    'kickL',
-    'kickR',
-    'moveB',
-    'moveF',
-    'punchL',
-    'punchR',
-    'skill',
-    'Unknown pose'
-];
-var command;
-
-async function loadModel(){
-    const handler = tfn.io.fileSystem('./public/jsModel/model.json');
-    return await tf.loadLayersModel(handler);
-}
-loadModel().then(loaded_model => model = loaded_model).then(console.log('==model loaded=='));
-
 const PORT = 5000;
 var r1 = [];
 var r2 = [];
@@ -77,24 +54,6 @@ setRoom = (skt1, room, arr, skt2) => {
         }else{
             arr.push(socket.id);console.log(room + " : ", arr);
             socket.join(room);
-
-            socket.on('canvas_img', (buff) => {
-                let arr = Buffer.from(buff).toJSON().data
-                // console.log(Buffer.from(buff).toJSON().data);
-                let input = tf.tensor(arr, [1, 224, 224, 4]);
-                input = input.slice([0, 0, 0, 0], [1, 224, 224, 3]);
-
-                const preds = model.predict(input);
-                // console.log(preds.dataSync());  // tf.print(preds);
-                let index = preds.argMax(1).dataSync()[0];
-                let new_command = CLASSES[index];
-                // command ... new_command
-                let prob = preds.dataSync()[index];
-
-                if(prob > 0.7){
-                    console.log(new_command, prob);
-                }
-            });
     
             socket.on('cmd', (data) => {
                 console.log(data);
