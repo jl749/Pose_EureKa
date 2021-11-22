@@ -6,9 +6,18 @@
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div><img style="width: 552px; height: 425px; margin-top: 1px; margin-left: 1px"/></div>
+    <div>
+        <img style="width: 552px; height: 425px; margin-top: 1px; margin-left: 1px"/>
+        <video class="input_video"></video>
+        <canvas style="border: black solid 1px;" class="output_canvas" width="224px" height="224px"></canvas>
+    </div>
     <div>
         <button id="stream" onclick="start_stream()">Stream The Game</button>
     </div>
@@ -36,7 +45,7 @@
             socket.emit('cmd', cmd);
         }
         function start_stream() {
-            $('#stream').hide();
+            // $('#stream').hide();
             socket.emit('start_stream');
         }
 
@@ -61,6 +70,7 @@
             // else the socket will automatically try to reconnect
         });
     </script>
+    <script src="./pose.js"></script>
     
 </body>
 </html>
