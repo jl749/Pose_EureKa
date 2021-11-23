@@ -2,6 +2,7 @@
 sudo apt-get update
 
 #INSTALL py, node, npm, snes9x
+sudo apt install xdotool
 sudo apt-get install python3
 sudo apt install nodejs
 sudo apt install npm
