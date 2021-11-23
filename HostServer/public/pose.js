@@ -126,7 +126,7 @@ function poseClassification(cors) {
     {
         let shoulder_len = cors[11].x - cors[12].x
         let ankle_len = cors[27].x - cors[28].x
-        if((cors[28].x<cors[26].x && cors[26].x < cors[12].x && cors[12].x < cors[11].x && cors[11].x < cors[25].x && cors[25].x < cors[27].x) && (shoulder_len< ankle_len))
+        if(((cors[28].x<cors[26].x && cors[26].x < cors[12].x && cors[12].x < cors[11].x && cors[11].x < cors[25].x && cors[25].x < cors[27].x)||(cors[28].x>cors[26].x && cors[26].x > cors[12].x && cors[12].x > cors[11].x && cors[11].x > cors[25].x && cors[25].x > cors[27].x)) && (shoulder_len< ankle_len))
         {
             return "forward";
         }
