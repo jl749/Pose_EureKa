@@ -28,9 +28,9 @@ app.all('*', (req, res) => {
     res.status(404).send('resource not found');
 });
 
-// 'http://172.22.77.5:3000'
-// 'http://192.168.43.146:3000'
-const game_server1 = 'http://192.168.0.5:3000';
+// http://192.168.0.10:3000  < -- GameServer2
+// http://192.168.0.8:3000   < -- GameServer3
+const game_server1 = 'http://192.168.0.9:3000';
 var socket1 = io2.connect(game_server1);  // raspberry server 1
 socket1.on('connect', function () {
     console.log('game server connected to host server');

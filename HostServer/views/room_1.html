@@ -2,9 +2,9 @@
 <head>
     <meta charset="utf-8">
     <title>socketIO_DEMO</title>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
-    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <!-- <script src="http://localhost:5000/socket.io/socket.io.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -34,7 +34,7 @@
     </div>
     
     <script type="text/javascript">
-        const socket = io('http://localhost:5000/room_1');
+        const socket = io('http://192.168.0.3:5000/room_1');
 
         window.onunload = window.onbeforeunload = function() {
             socket.close();
