@@ -33,7 +33,7 @@ function normaliseCor(input) {
 
 function poseClassification(cors) {    
     if(!cors[0])
-        return 'unknown';
+        return 'undef';
 
     visibleSide = (cor1, cor2) => {
         if(!cor1)
@@ -141,10 +141,10 @@ function poseClassification(cors) {
     }
 
     
-    return "unknown";
+    return "undef";
 }
 
-var prevPose = 'unknown';
+var prevPose = 'undef';
 async function onResults(results) {
     if (!results.poseLandmarks) {
         return;
@@ -171,7 +171,7 @@ async function onResults(results) {
     let cors = normaliseCor(results.poseLandmarks);
     let curPose = poseClassification(cors);
 
-    if((prevPose!=curPose) && (curPose!='unknown')) {
+    if((prevPose!=curPose) && (curPose!='undef')) {
         socket.emit('cmd', curPose);
         console.log('cmd_sent: ', curPose);
         prevPose = curPose;
