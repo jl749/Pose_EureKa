@@ -49,10 +49,10 @@ io1.on('connection', (socket) => {
 			case "p1_crouch":
 				socketF.emit('key_execute', '1')
 				break;
-			case "p1_moveL":
+			case "p1_backward":
 				socketF.emit('key_execute', '2')
 				break;
-			case "p1_moveR":
+			case "p1_forward":
 				socketF.emit('key_execute', '3')
 				break;
 			case "p1_powerL":
@@ -86,10 +86,10 @@ io1.on('connection', (socket) => {
 			case "p2_crouch":
 				socketF.emit('key_execute', '5')
 				break;
-			case "p2_moveL":
+			case "p2_forward":
 				socketF.emit('key_execute', '4')
 				break;
-			case "p2_moveR":
+			case "p2_backward":
 				socketF.emit('key_execute', '6')
 				break;
 			case "p2_powerL":
@@ -109,7 +109,7 @@ io1.on('connection', (socket) => {
 		process = spawn(
 			ffmpeg,
 			// Linux
-			["-video_size", "500x380", "-framerate", "15", "-f", "x11grab", "-i", ":0.0+80,130", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
+			["-video_size", "500x380", "-framerate", "10", "-f", "x11grab", "-i", ":0.0+80,130", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
 			// Windows
 			// ["-f", "gdigrab", "-framerate", "30", "-i", "desktop", '-crf', '0', '-preset', 'ultrafast', '-f', 'mjpeg', '-'],
 			{ stdio: "pipe" }

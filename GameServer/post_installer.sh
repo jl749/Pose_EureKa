@@ -14,7 +14,7 @@ flatpak install flathub com.snes9x.Snes9x
 #CLONE project repo and set up
 cd ~/Downloads
 git clone https://github.com/jl749/pose_eureka
-cd ./pose_eureka/GameServer
+cd ./pose_eureka/GameServer/
 npm init -y
 npm install
 
