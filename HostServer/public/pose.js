@@ -182,7 +182,8 @@ const pose = new Pose({locateFile: (file) => {
     return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
 }});
 pose.setOptions({
-    selfieMode: true,
+    selfieMode: false,
+    modelComplexity: 1,
     smoothLandmarks: true,
     enableSegmentation: true,
     smoothSegmentation: true,
