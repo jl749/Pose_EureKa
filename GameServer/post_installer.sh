@@ -14,12 +14,13 @@ flatpak install flathub com.snes9x.Snes9x
 #CLONE project repo and set up
 cd ~/Downloads
 git clone https://github.com/jl749/pose_eureka
-cd ./Pose_EureKa/GameServer
+cd ./pose_eureka/GameServer
 npm init -y
 npm install
 
 sudo apt install python3-testresources
-pip3 install -r ~/Downloads/Pose_EureKa/GameServer/FLASK_keymap/requirements.txt
+sudo apt install python3-pip
+pip3 install -r ~/Downloads/pose_eureka/GameServer/FLASK_keymap/requirements.txt
 
 #SCREEN_LOCK
 sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target

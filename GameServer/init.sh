@@ -5,9 +5,9 @@ xrandr --output Virtual1 --mode 1621x939
 
 flatpak run com.snes9x.Snes9x &
 pid[0]=$!
-python3 ~/Downloads/Pose_EureKa/GameServer/FLASK_keymap/main.py &
+python3 ~/Downloads/pose_eureka/GameServer/FLASK_keymap/main.py &
 pid[1]=$!
-node ~/Downloads/Pose_EureKa/GameServer/app.js &
+node ~/Downloads/pose_eureka/GameServer/app.js &
 pid[2]=$!
 sleep 2
 
