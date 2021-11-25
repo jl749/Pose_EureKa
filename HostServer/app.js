@@ -11,6 +11,10 @@ var r3 = [];
 
 app.use(express.static('./public'));
 
+app.get('/', (req, res) => {
+    // res.render('index');
+    res.sendFile(__dirname + '/views/main.html');
+});
 app.get('/room_1', (req, res) => {
     // res.render('index');
     res.sendFile(__dirname + '/views/room_1.html');

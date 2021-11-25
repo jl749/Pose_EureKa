@@ -171,7 +171,7 @@ async function onResults(results) {
     let cors = normaliseCor(results.poseLandmarks);
     let curPose = poseClassification(cors);
 
-    if((prevPose!=curPose) && (prevPose!='unknown')) {
+    if((prevPose!=curPose) && (curPose!='unknown')) {
         socket.emit('cmd', curPose);
         console.log('cmd_sent: ', curPose);
         prevPose = curPose;
