@@ -33,7 +33,7 @@ function normaliseCor(input) {
 
 function poseClassification(cors) {    
     if(!cors[0])
-        return 'error';
+        return 'unknown';
 
     visibleSide = (cor1, cor2) => {
         if(!cor1)
@@ -62,11 +62,6 @@ function poseClassification(cors) {
             return true;
         return false;
     };
-    // facingRight = () => {
-    //     if( Math.abs(cors[1].x) < Math.abs(cors[4].x))
-    //         return true;  // facing right
-    //     return false;  // facing left
-    // };
 
     // jump
     if(cors[15]&&cors[13]&&cors[16]&&cors[14]&& (cors[12] && cors[11]) ) {
@@ -142,13 +137,14 @@ function poseClassification(cors) {
     // skill
     if(cors[15]&&cors[16]&&hip&&shoulder) { 
         if( ((cors[15].y < cors[0].y && cors[16].y > shoulder.y && cors[16].y < hip.y) || (cors[16].y < cors[0].y && cors[15].y > shoulder.y && cors[15].y < hip.y)) && bothArmForward() )
-            return 'skill';
+            return 'skill1';
     }
 
     
     return "unknown";
 }
 
+var prevPose = 'unknown';
 async function onResults(results) {
     if (!results.poseLandmarks) {
         return;
@@ -173,7 +169,13 @@ async function onResults(results) {
             {color: '#FF0000', radius: 1});
 
     let cors = normaliseCor(results.poseLandmarks);
-    console.log(poseClassification(cors));
+    let curPose = poseClassification(cors);
+
+    if((prevPose!=curPose) && (prevPose!='unknown')) {
+        socket.emit('cmd', curPose);
+        console.log('cmd_sent: ', curPose);
+        prevPose = curPose;
+    }
 }
 
 const pose = new Pose({locateFile: (file) => {
@@ -181,7 +183,6 @@ const pose = new Pose({locateFile: (file) => {
 }});
 pose.setOptions({
     selfieMode: true,
-    modelComplexity: 1,
     smoothLandmarks: true,
     enableSegmentation: true,
     smoothSegmentation: true,
