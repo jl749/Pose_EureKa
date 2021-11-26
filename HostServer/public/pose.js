@@ -133,13 +133,6 @@ function poseClassification(cors) {
             return 'crouch';
         }
     }
-
-    // skill
-    if(cors[15]&&cors[16]&&hip&&shoulder) { 
-        if( ((cors[15].y < cors[0].y && cors[16].y > shoulder.y && cors[16].y < hip.y) || (cors[16].y < cors[0].y && cors[15].y > shoulder.y && cors[15].y < hip.y)) && bothArmForward() )
-            return 'skill1';
-    }
-
     
     return "undef";
 }
