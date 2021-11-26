@@ -81,16 +81,16 @@ io1.on('connection', (socket) => {
 				socketF.emit('key_execute', 'k')
 				break;
 			case "p2_jump":
-				socketF.emit('key_execute', '8')
+				socketF.emit('key_execute', '4')
 				break;
 			case "p2_crouch":
 				socketF.emit('key_execute', '5')
 				break;
 			case "p2_forward":
-				socketF.emit('key_execute', '4')
+				socketF.emit('key_execute', '6')
 				break;
 			case "p2_backward":
-				socketF.emit('key_execute', '6')
+				socketF.emit('key_execute', '7')
 				break;
 			case "p2_powerL":
 				socketF.emit('key_execute', 'y')
@@ -142,7 +142,7 @@ io1.on('connection', (socket) => {
 	});
 
 	socket.on('disconnect', () => {
-		console.log('host server room1 disconnected');
+		console.log('host server room disconnected');
 	});
 });
 
