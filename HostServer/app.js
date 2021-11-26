@@ -75,7 +75,7 @@ setRoom = (skt1, room, arr, skt2) => {
             socket.on('cmd', (data) => {
                 console.log(data);
                 
-                p_id = r1.indexOf(socket.id)+1
+                let p_id = arr.indexOf(socket.id)+1
                 skt2.emit('cmd', "p" + p_id + "_" + data);  // pass command to game server (raspberry)
                 // skt1.to(room).emit('message', 'server reply to ' + room);  // acknowledgement
                 // socket.emit('message', 'server reply to ' + room);  // bck to clinet requested
