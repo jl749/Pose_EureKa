@@ -41,9 +41,22 @@ socket1.on('connect', function () {
     socket1.emit('message', 'connected to HostServer');
 });
 socket1.on('screen', (imgStr) => {
-    rooms.to('room_1').emit('screen', imgStr);
+    room1.to('room_1').emit('screen', imgStr);
 });
 socket1.on('disconnect', function() {
+    console.log('game server connection lost');
+});
+
+const game_server2 = 'http://192.168.0.10:3000';
+var socket2 = io2.connect(game_server2);  // raspberry server 1
+socket2.on('connect', function () {
+    console.log('game server connected to host server');
+    socket2.emit('message', 'connected to HostServer');
+});
+socket2.on('screen', (imgStr) => {
+    room2.to('room_2').emit('screen', imgStr);
+});
+socket2.on('disconnect', function() {
     console.log('game server connection lost');
 });
 
@@ -89,10 +102,10 @@ setRoom = (skt1, room, arr, skt2) => {
     });
 }
 
-const rooms = io1.of('/room_1');
-setRoom(rooms, 'room_1', r1, socket1);
-// const room2 = io1.of('/room_2');
-// setRoom(room2, 'room_2', r2);
+const room1 = io1.of('/room_1');
+setRoom(room1, 'room_1', r1, socket1);
+const room2 = io1.of('/room_2');
+setRoom(room2, 'room_2', r2);
 // const room3 = io1.of('/room_3');
 // setRoom(room3, 'room_3', r3);
 
