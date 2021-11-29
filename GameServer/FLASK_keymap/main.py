@@ -31,13 +31,13 @@ def p1_skill1(direction: bool):  # 1 for facing right, 0 for facing reverse
     time.sleep(0.03)
     keyboard.release(Key.down)
     time.sleep(0.05)
-    keyboard.press('c')
+    keyboard.press('z')
 
     time.sleep(0.05)
     keyboard.release(tmp)
     time.sleep(0.1)
 
-    keyboard.release('c')
+    keyboard.release('z')
     time.sleep(0.3)
 
 
