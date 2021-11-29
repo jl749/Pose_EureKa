@@ -21,7 +21,7 @@ def p2_releaseAll():
     keyboard.release('6')
 
 
-def p1_skill1(direction: bool):  # 0 for facing right, 1 for facing reverse
+def p1_skill1(direction: bool):  # 1 for facing right, 0 for facing reverse
     p1_releaseAll()
     keyboard.press(Key.down)
 
@@ -44,15 +44,21 @@ def p1_skill1(direction: bool):  # 0 for facing right, 1 for facing reverse
 def p2_skill1(direction: bool):  # 0 for facing left, 1 for facing right
     p2_releaseAll()
     keyboard.press('5')
-    time.sleep(0.04)
+
     tmp = '4' if direction else '6'
+    time.sleep(0.05)
     keyboard.press(tmp)
+    time.sleep(0.03)
     keyboard.release('5')
-    time.sleep(0.04)
+    time.sleep(0.05)
     keyboard.press('g')
+
+    time.sleep(0.05)
     keyboard.release(tmp)
-    time.sleep(0.02)
+    time.sleep(0.01)
+
     keyboard.release('g')
+    time.sleep(0.3)
 
 
 def nextMoveRelease(playerN: bool, newCmd):  # 0 for p1, 1 for p2

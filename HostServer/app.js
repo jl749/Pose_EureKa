@@ -60,6 +60,19 @@ socket2.on('disconnect', function() {
     console.log('game server connection lost');
 });
 
+// const game_server3 = 'http://192.168.0.8:3000';
+// var socket3 = io2.connect(game_server3);  // raspberry server 1
+// socket3.on('connect', function () {
+//     console.log('game server connected to host server');
+//     socket3.emit('message', 'connected to HostServer');
+// });
+// socket3.on('screen', (imgStr) => {
+//     room2.to('room_2').emit('screen', imgStr);
+// });
+// socket3.on('disconnect', function() {
+//     console.log('game server connection lost');
+// });
+
 
 setRoom = (skt1, room, arr, skt2) => {
     skt1.on('connection', (socket) => {

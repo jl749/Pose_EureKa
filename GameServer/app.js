@@ -61,10 +61,7 @@ io1.on('connection', (socket) => {
 			case "p1_powerR":
 				socketF.emit('key_execute', 's')
 				break;
-			case "p1_skill1L":
-				socketF.emit('key_execute', 'p1_skill1L')
-				break;
-			case "p1_skill1R":
+			case "p1_skill1":
 				socketF.emit('key_execute', 'p1_skill1R')
 				break;
 
@@ -99,7 +96,7 @@ io1.on('connection', (socket) => {
 				socketF.emit('key_execute', 'u')
 				break;
 			case "p2_skill1":
-				socketF.emit('key_execute', 'p2_skill1')
+				socketF.emit('key_execute', 'p2_skill1R')
 				break;
 
 			case "p1_start":

@@ -1,36 +1,89 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>socketIO_DEMO</title>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
-    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+    <title>room3</title>
+    <script src="http://192.168.0.3:5000/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <input type="text" class="msg">
-    <button onclick=sendMessage()>Send Msg</button>
+<body style="background-color: dimgray;display: grid;place-items: center;">
+    <div style="display: inline-block;">
+        <div>
+            <img style="width: 790px; height: 600px; margin-top: 1px; margin-left: 1px;text-align: center"/>
+        </div>
 
-    <script>
-        const socket = io('http://localhost:5000/room_3');
-        socket.on('connection', () => {
-            console.log('clinet connected to server socket');
-        });
+        <div style="text-align: center;">
+            <video class="input_video" style="border-radius: 2rem;"></video>
+            <canvas style="border: black solid 1px; border-radius: 2rem;" class="output_canvas" width="300px" height="300px"></canvas>
+        </div>
+    </div>
+    <div>
+        <div style="text-align: center">
+            <button id="stream" onclick="start_stream()">Stream The Game</button>
+        </div>
 
-        function sendMessage() {
-            socket.emit('message', "aaaaaaaaaaaaaaaaaaaa");
+        <div style="text-align: center">
+            <button onclick="emitCommand('undef')">undef</button>
+            <button onclick="emitCommand('start')">start</button>
+        </div>
+        <div>
+            <button onclick="emitCommand('punchL')">punchL</button>
+            <button onclick="emitCommand('punchR')">punchR</button>
+            <button onclick="emitCommand('kickL')">kickL</button>
+            <button onclick="emitCommand('kickR')">kickR</button>
+            <button onclick="emitCommand('skill1L')">skill1L</button>
+            <button onclick="emitCommand('skill1R')">skill1R</button>
+        </div>
+        <div style="text-align: center">
+            <button onclick="emitCommand('jump')">jump</button>
+            <button onclick="emitCommand('forward')">moveL</button>
+            <button onclick="emitCommand('backward')">moveR</button>
+            <button onclick="emitCommand('crouch')">crouch</button>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        const socket = io('http://192.168.0.3:5000/room_3');
+
+        window.onunload = window.onbeforeunload = function() {
+            socket.close();
+        };
+
+        function emitCommand(cmd) {
+            console.log(cmd);
+            socket.emit('cmd', cmd);
+        }
+        function start_stream() {
+            // $('#stream').hide();
+            socket.emit('start_stream');
         }
 
-        socket.on('message', (data) => {
-            console.log(data);
+        socket.on('connect', () => {
+            console.log('client connected to host server socket');
+        });
+
+        socket.on('screen', (imgStr) => {
+            $('img').attr('src', 'data:image/png;base64,' + imgStr);
+        });
+
+        socket.on('forceDisconnect', () => {
+            socket.disconnect();
+            console.log('room is full... you are disconnected');
         });
 
         socket.on("disconnect", (reason) => {
-            if (reason === "io server disconnect") {    
-                // the disconnection was initiated by the server, you need to reconnect manually    
-                socket.connect();  
-            }  
+            if (reason === "io server disconnect") {
+                // the disconnection was initiated by the server, you need to reconnect manually
+                socket.connect();
+            }
             // else the socket will automatically try to reconnect
         });
     </script>
+    <script src="./pose.js"></script>
+    
 </body>
 </html>
