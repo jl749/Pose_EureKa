@@ -55,7 +55,7 @@ def p2_skill1(direction: bool):  # 0 for facing left, 1 for facing right
 
     time.sleep(0.05)
     keyboard.release(tmp)
-    time.sleep(0.01)
+    time.sleep(0.1)
 
     keyboard.release('g')
     time.sleep(0.3)
