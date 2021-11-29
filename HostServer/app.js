@@ -107,7 +107,7 @@ setRoom = (skt1, room, arr, skt2) => {
                 let i = arr.indexOf(socket);
                 arr.splice(i, 1);
 
-                if(arr.length == 0){
+                if(arr.length == 0) {
                     skt2.emit('stop_stream');
                 }
             });
