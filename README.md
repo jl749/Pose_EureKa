@@ -4,6 +4,8 @@ pose based motion interface + streaming service running under a local network
 
 
 next command must be different from the previous command  (e.g. Lkick, Lkick will not work but Lkick, Rkick will work)
+
+
 ![](https://github.com/jl749/Pose_EureKa/blob/master/1v1_demo.gif)
 
 
@@ -66,3 +68,11 @@ you will need to set up a reverse proxy before the host server's express js for 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/nO7Ca_bAdnE/0.jpg)](https://youtu.be/nO7Ca_bAdnE)
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/4Jr04ehmgc0/0.jpg)](https://youtu.be/4Jr04ehmgc0)
+
+
+## Todo
+- [ ] Fix game streaming delays (when plyed for too long gets laggy and cause delays)
+- [ ] Create game lobby (occupied?)
+- [ ] Spectate features with live chat
+- [ ] Data traffic optimisation
+- [ ] Deploy (public network)
