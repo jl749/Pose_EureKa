@@ -1,5 +1,5 @@
 # Pose_EureKa
-pose based motion interface + streaming service running under a local network
+pose based **Super Nintendo Entertainment System (SNES)** motion interface + streaming service running under a local network
 (have not tested on the public network yet and there are many adjustments and improvements to be made)
 
 
