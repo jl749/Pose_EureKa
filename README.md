@@ -11,8 +11,8 @@ next command must be different from the previous command  (e.g. Lkick, Lkick wil
 
 ## Preparation
 1) ubuntu host server to run express js and stream the game screens
-2) a router to form a local network
-3) vmware installed on the host server (three socketio rooms --> three virtual games servers)
+2) a router to set up a local network
+3) vmware installed on the host server (three socketio rooms --> three virtual game servers)
 
 ## Setup
 * on the host server
@@ -47,10 +47,11 @@ const game_server3 = http://192.168.0.8:3000
 ```
 when everything set up access the application via 'http://localhost:5000/room_1'
 
-if you are accessing it from a remote computer (not on server) </br>
-you will need to set up a reverse proxy before the host server's express js for the [secure connection](https://w3c.github.io/webappsec-secure-contexts/)
+if you are accessing it from a remote computer (outside localhost) </br>
 
-(`getUserMedia` is only available from secure contexts)
+since `getUserMedia` is only available from the [secure](https://w3c.github.io/webappsec-secure-contexts/) contexts
+you will need to set up a reverse proxy gateway
+
 
 
 (or you can simply start chrome with the following flag `--unsafely-treat-insecure-origin-as-secure="http://example.com"`)
