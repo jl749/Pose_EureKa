@@ -39,13 +39,11 @@ sudo ./init.sh
 
 * change the local ips of game servers in 'HostServer/app.js' accordingly
 ```
-At the moment they are ...
-
 const game_server1 = http://192.168.0.9:3000
 const game_server2 = http://192.168.0.10:3000
 const game_server3 = http://192.168.0.8:3000
 ```
-when everything set up access the application via 'http://localhost:5000/room_1'
+when everything is ready access the application via 'http://localhost:5000/room_1'
 
 if you are accessing it from a remote computer (outside localhost) </br>
 
