@@ -4,6 +4,7 @@ pose based **Super Nintendo Entertainment System (SNES)** motion interface + str
 
 
 ![](https://github.com/jl749/Pose_EureKa/blob/master/1v1_demo.gif)
+
 every move must be different (e.g. Lkick, Lkick will not work but Lkick, Rkick will work)
 
 
