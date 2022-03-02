@@ -1,12 +1,10 @@
 # Pose_EureKa
-pose based **Super Nintendo Entertainment System (SNES)** motion interface + streaming service running under a local network
-(have not tested on the public network yet and there are many adjustments and improvements to be made)
+pose based **Super Nintendo Entertainment System (SNES)** motion interface + streaming web application.
 
-
-next command must be different from the previous command  (e.g. Lkick, Lkick will not work but Lkick, Rkick will work)
 
 
 ![](https://github.com/jl749/Pose_EureKa/blob/master/1v1_demo.gif)
+every move must be different (e.g. Lkick, Lkick will not work but Lkick, Rkick will work)
 
 
 ## Preparation
@@ -15,7 +13,7 @@ next command must be different from the previous command  (e.g. Lkick, Lkick wil
 3) vmware installed on the host server (three socketio rooms --> three virtual game servers)
 
 ## Setup
-* on the host server
+* host server
 ```
 sudo apt install nodejs
 sudo apt install npm
@@ -27,7 +25,7 @@ npm install
 node app.js
 ```
 
-* then set up the gameserver (vmware)
+* gameserver (vmware)
 ```
 cd ~/Downloads
 git clone https://github.com/jl749/pose_eureka.git
@@ -37,22 +35,21 @@ sudo ./post_installer.sh
 sudo ./init.sh
 ```
 
-* change the local ips of game servers in 'HostServer/app.js' accordingly
+* change local vmware ips accordingly
 ```
+# insdie 'HostServer/app.js'
+
 const game_server1 = http://192.168.0.9:3000
 const game_server2 = http://192.168.0.10:3000
 const game_server3 = http://192.168.0.8:3000
 ```
 when everything is ready access the application via 'http://localhost:5000/room_1'
 
-if you are accessing it from a remote computer (outside localhost) </br>
-
-since `getUserMedia` is only available from the [secure](https://w3c.github.io/webappsec-secure-contexts/) contexts
-you will need to set up a reverse proxy gateway
+`getUserMedia` fucntion is only allowed from the [secure](https://w3c.github.io/webappsec-secure-contexts/) contexts
+you will need to set up a reverse proxy gateway in order to access the webpage outside of the loacalhost
 
 
-
-(or you can simply start chrome with the following flag `--unsafely-treat-insecure-origin-as-secure="http://example.com"`)
+(or simply start the chrome with the following flag `--unsafely-treat-insecure-origin-as-secure="http://example.com"`)
 
 
 ## Tech Stack
@@ -70,8 +67,8 @@ you will need to set up a reverse proxy gateway
 
 
 ## Todo
-- [ ] Fix game streaming delays (when plyed for too long gets laggy and cause delays)
-- [ ] Create game lobby (occupied?)
-- [ ] Spectate features with live chat
-- [ ] Data traffic optimisation
-- [ ] Deploy (public network)
+- [ ] Fix javascript streaming delays
+- [ ] Create game lobby (room occupied?)
+- [ ] Spectators with live chat
+- [ ] Data traffic optimisation (WebRTC maybe?)
+- [ ] Test on the public network
